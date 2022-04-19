@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/mnt/c/Users/97252/Documents/GitHub/Threads/main.c
+stdio.h
+/mnt/c/Users/97252/Documents/GitHub/Threads/stdio.h
+stack.h
+/mnt/c/Users/97252/Documents/GitHub/Threads/stack.h
+stdlib.h
+/mnt/c/Users/97252/Documents/GitHub/Threads/stdlib.h
+
+/mnt/c/Users/97252/Documents/GitHub/Threads/stack.h
+
