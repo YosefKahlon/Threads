@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/mnt/c/Users/97252/Documents/GitHub/Threads/main.c
-stdio.h
-/mnt/c/Users/97252/Documents/GitHub/Threads/stdio.h
+/mnt/c/Users/97252/Documents/GitHub/Threads/stack.c
 stack.h
 /mnt/c/Users/97252/Documents/GitHub/Threads/stack.h
+stdio.h
+/mnt/c/Users/97252/Documents/GitHub/Threads/stdio.h
 stdlib.h
 /mnt/c/Users/97252/Documents/GitHub/Threads/stdlib.h
 

@@ -19,11 +19,13 @@ typedef struct stack{
     int size;
 } Stack;
 
-void printStack(Stack** s);
+void printStack(Stack** stack);
 
 char*top(Stack** stack);
 
-void push(node** top ,char* text);
+void push(Stack** top ,char* text);
 
 void pop(Stack** stack);
+
+void free_stack(Stack** stack);
 #endif //THREADS_STACK_H
