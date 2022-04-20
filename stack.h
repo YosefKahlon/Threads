@@ -9,7 +9,7 @@
 
 
 typedef struct node {
-    char data[1024];
+    char data[text_length];
     struct node *next;
 } node;
 

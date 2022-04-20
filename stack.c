@@ -68,7 +68,7 @@ int main() {
     push(&s, "ok");
     push(&s,"bye");
     printStack(&s);
-    
+
     free_stack(&s);
 
     return 0;
