@@ -6,6 +6,8 @@
 ** client.c -- a stream socket client demo
 */
 
+#define EQUAL 0
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -34,6 +36,7 @@ void *get_in_addr(struct sockaddr *sa)
 
 int main(int argc, char *argv[])
 {
+    int desc = dup(1); // close stout
     int sockfd, numbytes;
     char buf[MAXDATASIZE];
     struct addrinfo hints, *servinfo, *p;
@@ -90,6 +93,31 @@ int main(int argc, char *argv[])
     buf[numbytes] = '\0';
 
     printf("client: received '%s'\n",buf);
+
+
+    dup2(sockfd,1);
+
+    while (1) {
+        char *command = NULL;
+
+        size_t size = 0;
+
+        //s-size_t type to be able to receive value -1 // size of the input  line
+        ssize_t line_size = getline(&command, &size, stdin);
+        command[line_size - 1] = '\0';
+        if(strcmp("EXIT", command) == EQUAL) {
+            break;
+        }
+        if (strcmp("TOP", command) == EQUAL) {
+            printf("%s", command);
+            char top[1024];
+            if ((numbytes = recv(sockfd, top, 1024, 0)) == -1) {
+                perror("recv");
+                exit(1);
+            }
+            printf("TOP reply : %s", top);
+        }
+    }
 
     close(sockfd);
 

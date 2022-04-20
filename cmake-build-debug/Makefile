@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/c/Users/97252/Documents/GitHub/Threads
+CMAKE_SOURCE_DIR = /mnt/c/Users/barak/Documents/GitHub/Threads
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/c/Users/97252/Documents/GitHub/Threads/cmake-build-debug
+CMAKE_BINARY_DIR = /mnt/c/Users/barak/Documents/GitHub/Threads/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/97252/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles /mnt/c/Users/97252/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/barak/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles /mnt/c/Users/barak/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/97252/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/barak/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -123,6 +123,33 @@ Threads/fast:
 	$(MAKE) -f CMakeFiles/Threads.dir/build.make CMakeFiles/Threads.dir/build
 .PHONY : Threads/fast
 
+client.o: client.c.o
+
+.PHONY : client.o
+
+# target to build an object file
+client.c.o:
+	$(MAKE) -f CMakeFiles/Threads.dir/build.make CMakeFiles/Threads.dir/client.c.o
+.PHONY : client.c.o
+
+client.i: client.c.i
+
+.PHONY : client.i
+
+# target to preprocess a source file
+client.c.i:
+	$(MAKE) -f CMakeFiles/Threads.dir/build.make CMakeFiles/Threads.dir/client.c.i
+.PHONY : client.c.i
+
+client.s: client.c.s
+
+.PHONY : client.s
+
+# target to generate assembly for a file
+client.c.s:
+	$(MAKE) -f CMakeFiles/Threads.dir/build.make CMakeFiles/Threads.dir/client.c.s
+.PHONY : client.c.s
+
 main.o: main.c.o
 
 .PHONY : main.o
@@ -149,6 +176,33 @@ main.s: main.c.s
 main.c.s:
 	$(MAKE) -f CMakeFiles/Threads.dir/build.make CMakeFiles/Threads.dir/main.c.s
 .PHONY : main.c.s
+
+server.o: server.c.o
+
+.PHONY : server.o
+
+# target to build an object file
+server.c.o:
+	$(MAKE) -f CMakeFiles/Threads.dir/build.make CMakeFiles/Threads.dir/server.c.o
+.PHONY : server.c.o
+
+server.i: server.c.i
+
+.PHONY : server.i
+
+# target to preprocess a source file
+server.c.i:
+	$(MAKE) -f CMakeFiles/Threads.dir/build.make CMakeFiles/Threads.dir/server.c.i
+.PHONY : server.c.i
+
+server.s: server.c.s
+
+.PHONY : server.s
+
+# target to generate assembly for a file
+server.c.s:
+	$(MAKE) -f CMakeFiles/Threads.dir/build.make CMakeFiles/Threads.dir/server.c.s
+.PHONY : server.c.s
 
 stack.o: stack.c.o
 
@@ -186,9 +240,15 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... Threads"
+	@echo "... client.o"
+	@echo "... client.i"
+	@echo "... client.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... server.o"
+	@echo "... server.i"
+	@echo "... server.s"
 	@echo "... stack.o"
 	@echo "... stack.i"
 	@echo "... stack.s"
