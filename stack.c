@@ -5,12 +5,11 @@
 #include "stack.h"
 #include "stdio.h"
 #include "stdlib.h"
+#include "string.h"
 
 void push(Stack **stack, char *text) {
     node *new_node = (node *) malloc(sizeof(node));
-    new_node->data = (char *) malloc(text_length);
-    new_node->data = text;
-
+    strcpy(new_node->data, text);
 
     if ((*stack)->head == NULL) {
         (*stack)->head = new_node;
@@ -29,9 +28,15 @@ void pop(Stack **stack) {
         printf("Empty stack \n");
         return;
     }
-    node *top = (*stack)->head;
-    (*stack)->head = (*stack)->head->next;
-    free(top);
+
+    if ((*stack)->head->next == NULL) {
+        free((*stack)->head);
+    } else {
+        node *top = (*stack)->head;
+        (*stack)->head = (*stack)->head->next;
+        free(top);
+    }
+    (*stack)->size--;
 }
 
 char *top(Stack **stack) {
@@ -40,15 +45,11 @@ char *top(Stack **stack) {
 
 void free_stack(Stack **stack) {
 
-//    while ((*stack)->size != 0 ) {
-//        pop(stack);
-//        (*stack)->size--;
-//    }
-//    free((*stack)->head->next);
-//
-//    free((*stack)->head);
-//    free((*stack));
-    free(stack);
+    while ((*stack)->size != 0) {
+        pop(stack);
+    }
+
+    free((*stack));
 }
 
 void printStack(Stack **stack) {
@@ -64,10 +65,10 @@ int main() {
     Stack *s = (Stack *) malloc(sizeof(Stack));
     s->head = NULL;
 
-//    push(&s,"ok");
-//    push(&s,"bye");
-//    printStack(&s);
-
+    push(&s, "ok");
+    push(&s,"bye");
+    printStack(&s);
+    
     free_stack(&s);
 
     return 0;
