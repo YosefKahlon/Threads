@@ -35,6 +35,8 @@ Stack *shared_st;
 int server_running = 1;
 int sockfd;
 int new_fd[BACKLOG];
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
 
 
 void sig_handler(int signum) {
@@ -44,6 +46,9 @@ void sig_handler(int signum) {
         close(new_fd[i]);
     }
     close(sockfd);
+
+    //destroy the lock
+    pthread_mutex_destroy(&mutex);
     exit(1);
 }
 
@@ -93,6 +98,9 @@ void *server_listener(void *arg) {
         if (r != 0) {
             /* if the given command is TOP, the server will send the client the top value in the shared stack.*/
             if (strcmp("TOP", client_msg) == EQUAL) {
+                pthread_mutex_lock(&mutex); // lock the stack
+
+
 //                dup2(*s, 1);
 //                printf("%s\n", client_msg);
                 char *buff = top(&shared_st);
@@ -100,17 +108,27 @@ void *server_listener(void *arg) {
                     perror("send");
                 }
 //                printf("%s\n", buff);
+
+                 pthread_mutex_unlock(&mutex); //unlock the stack
             }
                 /* if the given command is POP, the server will pop the top value in the shared stack */
             else if (strcmp("POP", client_msg) == EQUAL) {
+                pthread_mutex_lock(&mutex); // lock the stack
+
+
                 pop(&shared_st);
+                pthread_mutex_unlock(&mutex); //unlock the stack
             }
                 /* if the given command is PUSH,
                  * the server will push the attached text after the command to the shared stack.*/
             else if (strncmp("PUSH", client_msg, 4) == EQUAL) {
+                pthread_mutex_lock(&mutex); // lock the stack
+
                 char text[text_length];
                 strncpy(text, client_msg + 5, strlen(client_msg) - 4);
                 push(&shared_st, text);
+
+                pthread_mutex_unlock(&mutex); //unlock the stack
             }
         } else {
             break;
@@ -123,6 +141,7 @@ int main(void) {
     /* INIT the server shared stack */
     shared_st = (Stack *) malloc(sizeof(Stack));
     shared_st->head = NULL;
+
 
 
     int status;
@@ -211,6 +230,9 @@ int main(void) {
             continue;
         }
 
+
+
+
         inet_ntop(their_addr.ss_family,
                   get_in_addr((struct sockaddr *) &their_addr),
                   s, sizeof s);
@@ -221,11 +243,15 @@ int main(void) {
         thread_num %= BACKLOG;
         printf("SOCK NUM : %d\n", new_fd[thread_num]);
         /*create new executable thread to handle the connection with the client (to reply hello world...)*/
+
         pthread_create(&client_h[thread_num], NULL, &server_listener, &new_fd[thread_num]);
         /* increasing the counter for next pthread in the queue*/
         thread_num++;
     }
 //    free_stack(&shared_st);
+
+
+
 
     wait(&status);
 //    close(new_fd);
