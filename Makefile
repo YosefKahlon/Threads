@@ -1,4 +1,4 @@
-CC = clang++
+CC = gcc
 
 
 
@@ -13,12 +13,12 @@ stack: stack.o
 stack.o: stack.c stack.h
 	$(CC) -c stack.c
 
-server.o: server.cpp stack.h
-	$(CC) -c server.cpp
+server.o: server.c stack.h
+	$(CC) -c server.c
 
 
-client: client.cpp
-	$(CC) client.cpp -o client
+client: client.c
+	$(CC) client.c -o client
 
 clean:
 	rm -f *.o server client stack

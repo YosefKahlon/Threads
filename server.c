@@ -27,9 +27,7 @@
 #include <pthread.h>
 #include "stack.c"
 
-typedef void * atomic_counter;
-//#include <tbb/tbb.h>
-//using namespace tbb;
+
 #define PORT "3490"  // the port users will be connecting to
 
 #define BACKLOG 10     // how many pending connections queue will hold
