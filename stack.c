@@ -40,6 +40,10 @@ void pop(Stack **stack) {
 }
 
 char *top(Stack **stack) {
+    if ((*stack)->size == 0) {
+        perror("ERROR: Stack is empty");
+        return "ERROR: Stack is empty";
+    }
     return (*stack)->head->data;
 }
 
@@ -60,17 +64,17 @@ void printStack(Stack **stack) {
 }
 
 
-int main() {
-
-    Stack *s = (Stack *) malloc(sizeof(Stack));
-    s->head = NULL;
-
-    push(&s, "ok");
-    push(&s,"bye");
-    printStack(&s);
-
-    free_stack(&s);
-
-    return 0;
-
-}
+//int main() {
+//
+//    Stack *s = (Stack *) malloc(sizeof(Stack));
+//    s->head = NULL;
+//
+//    push(&s, "ok");
+//    push(&s,"bye");
+//    printStack(&s);
+//
+//    free_stack(&s);
+//
+//    return 0;
+//
+//}

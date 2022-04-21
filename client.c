@@ -95,8 +95,8 @@ int main(int argc, char *argv[])
     printf("client: received '%s'\n",buf);
 
 
-    dup2(sockfd,1);
 
+    dup2(sockfd,1);
     while (1) {
         char *command = NULL;
 
@@ -109,13 +109,31 @@ int main(int argc, char *argv[])
             break;
         }
         if (strcmp("TOP", command) == EQUAL) {
-            printf("%s", command);
+//            printf("%s", command);
+
+            /* send the TOP command to the server */
+            send(sockfd,command,1024,0);
             char top[1024];
-            if ((numbytes = recv(sockfd, top, 1024, 0)) == -1) {
+            size_t numb;
+            dup2(desc,1);
+
+            /* recieve the top stack value from server shared stack.
+             * IN CASE of empty stack -> return ERROR reply */
+            if ((numb = recv(sockfd, top, 1024, 0)) == -1) {
                 perror("recv");
                 exit(1);
             }
-            printf("TOP reply : %s", top);
+            top[numb] = '\0';
+
+            /* check if the reply is an error or valid output (for prefix management)*/
+            if (strncmp("ERROR", top,  5) == EQUAL) {
+                printf("%s\n", top);
+            } else {
+                printf("OUTPUT: %s\n", top);
+            }
+        }
+        else if (strcmp("POP", command) == EQUAL || strncmp("PUSH",command, 4) == EQUAL) {
+            send(sockfd,command,1024,0);
         }
     }
 

@@ -10,8 +10,8 @@
 ** server.c -- a stream socket server demo
 */
 #define EQUAL 0
-
 #include <stdio.h>
+#include "stack.h"
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
@@ -24,7 +24,8 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <pthread.h>
-#include "stack.h"
+#include "stack.c"
+
 
 #define PORT "3490"  // the port users will be connecting to
 
@@ -70,11 +71,26 @@ void *server_listener(void *arg) {
         memset(client_msg, 0, 1024);
         size_t r = read(*s, client_msg, sizeof(client_msg));
         if (r != 0) {
+            /* if the given command is TOP, the server will send the client the top value in the shared stack.*/
             if(strcmp("TOP",client_msg) == EQUAL){
 //                dup2(*s, 1);
                 printf("%s\n", client_msg);
                 char *buff = top(&shared_st);
-                send(*s, buff, strlen(buff),1);
+                if (send(*s, buff, strlen(buff),0) == -1) {
+                    perror("send");
+                }
+                printf("%s\n", buff);
+            }
+            /* if the given command is POP, the server will pop the top value in the shared stack */
+            else if (strcmp("POP",client_msg) == EQUAL) {
+                pop(&shared_st);
+            }
+            /* if the given command is PUSH,
+             * the server will push the attached text after the command to the shared stack.*/
+            else if (strncmp("PUSH",client_msg, 4) == EQUAL) {
+                char text[1024];
+                strncpy(text,client_msg+5, strlen(client_msg) - 4);
+                push(&shared_st, text);
             }
 
         } else {
@@ -86,7 +102,6 @@ void *server_listener(void *arg) {
 
 
 int main(void) {
-
     /* INIT the server shared stack */
     shared_st = (Stack *) malloc(sizeof(Stack));
     shared_st->head = NULL;
