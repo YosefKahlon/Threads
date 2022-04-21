@@ -33,12 +33,16 @@
 #define BACKLOG 10     // how many pending connections queue will hold
 Stack *shared_st;
 int server_running = 1;
-int sockfd, new_fd;
+int sockfd;
+int new_fd[BACKLOG];
+
 
 void sig_handler(int signum) {
     free_stack(&shared_st);
     server_running = 0;
-    close(new_fd);
+    for (int i = 1; i < BACKLOG; ++i) {
+        close(new_fd[i]);
+    }
     close(sockfd);
     exit(1);
 }
@@ -81,7 +85,11 @@ void *server_listener(void *arg) {
 
     while (1) {
         memset(client_msg, 0, text_length);
-        size_t r = read(*s, client_msg, sizeof(client_msg));
+        size_t r;
+        if ((r = recv(*s, client_msg, sizeof(client_msg), 0)) == -1) {
+            perror("recv");
+            exit(1);
+        }
         if (r != 0) {
             /* if the given command is TOP, the server will send the client the top value in the shared stack.*/
             if (strcmp("TOP", client_msg) == EQUAL) {
@@ -197,8 +205,8 @@ int main(void) {
 
     while (server_running) {  // main accept() loop
         sin_size = sizeof their_addr;
-        new_fd = accept(sockfd, (struct sockaddr *) &their_addr, &sin_size);
-        if (new_fd == -1) {
+        new_fd[thread_num] = accept(sockfd, (struct sockaddr *) &their_addr, &sin_size);
+        if (new_fd[thread_num] == -1) {
             perror("accept");
             continue;
         }
@@ -211,9 +219,9 @@ int main(void) {
         /* in case we had more that 10 clients total(not at the same time) we can go point back to the previous threads
          * by module the curr index with backlog.*/
         thread_num %= BACKLOG;
-        printf("SOCK NUM : %d\n", new_fd);
+        printf("SOCK NUM : %d\n", new_fd[thread_num]);
         /*create new executable thread to handle the connection with the client (to reply hello world...)*/
-        pthread_create(&client_h[thread_num], NULL, &server_listener, &new_fd);
+        pthread_create(&client_h[thread_num], NULL, &server_listener, &new_fd[thread_num]);
         /* increasing the counter for next pthread in the queue*/
         thread_num++;
     }
