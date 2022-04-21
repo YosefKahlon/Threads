@@ -38,8 +38,8 @@ void *get_in_addr(struct sockaddr *sa)
 
 int main(int argc, char *argv[])
 {
-    int desc = dup(1); // close stout
-    int sockfd, numbytes;
+//    int desc = dup(1); // close stout
+    int c_sock, numbytes;
     char buf[MAXDATASIZE];
     struct addrinfo hints, *servinfo, *p;
     int rv;
@@ -61,15 +61,15 @@ int main(int argc, char *argv[])
 
     // loop through all the results and connect to the first we can
     for(p = servinfo; p != NULL; p = p->ai_next) {
-        if ((sockfd = socket(p->ai_family, p->ai_socktype,
+        if ((c_sock = socket(p->ai_family, p->ai_socktype,
                              p->ai_protocol)) == -1) {
             perror("client: socket");
             continue;
         }
 
-        if (connect(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
+        if (connect(c_sock, p->ai_addr, p->ai_addrlen) == -1) {
             perror("client: connect");
-            close(sockfd);
+            close(c_sock);
             continue;
         }
 
@@ -87,18 +87,18 @@ int main(int argc, char *argv[])
 
     freeaddrinfo(servinfo); // all done with this structure
 
-    if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
+    if ((numbytes = recv(c_sock, buf, MAXDATASIZE - 1, 0)) == -1) {
         perror("recv");
         exit(1);
     }
 
     buf[numbytes] = '\0';
 
+    printf("CLIENT SOCK NUM : %d\n", c_sock);
     printf("client: received '%s'\n",buf);
-    printf("CLIENT SOCK NUM : %d", sockfd);
 
 
-    dup2(sockfd,1);
+//    dup2(c_sock,1);
     while (1) {
 
         char *command = NULL;
@@ -117,15 +117,15 @@ int main(int argc, char *argv[])
 //            printf("%s", command);
 
             /* send the TOP command to the server */
-            send(sockfd,command,text_length,0);
+            send(c_sock, command, text_length, 0);
 
             char top[text_length];
             size_t numb;
-            dup2(desc,1);
+//            dup2(desc,1);
 
             /* receive the top stack value from server shared stack.
              * IN CASE of empty stack -> return ERROR reply */
-            if ((numb = recv(sockfd, top, text_length, 0)) == -1) {
+            if ((numb = recv(c_sock, top, text_length, 0)) == -1) {
                 perror("recv");
                 exit(1);
             }
@@ -139,11 +139,11 @@ int main(int argc, char *argv[])
             }
         }
         else if (strcmp("POP", command) == EQUAL || strncmp("PUSH",command, 4) == EQUAL) {
-            send(sockfd,command,1024,0);
+            send(c_sock, command, 1024, 0);
         }
     }
 
-    close(sockfd);
+    close(c_sock);
 
     return 0;
 }
