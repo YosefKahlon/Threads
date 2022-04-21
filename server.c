@@ -10,6 +10,7 @@
 ** server.c -- a stream socket server demo
 */
 #define EQUAL 0
+
 #include <stdio.h>
 #include "stack.h"
 #include <stdlib.h>
@@ -31,6 +32,17 @@
 
 #define BACKLOG 10     // how many pending connections queue will hold
 Stack *shared_st;
+int server_running = 1;
+int sockfd, new_fd;
+
+void sig_handler(int signum) {
+    free_stack(&shared_st);
+    server_running = 0;
+    close(new_fd);
+    close(sockfd);
+    exit(1);
+}
+
 void sigchld_handler(int s) {
     (void) s; // quiet unused variable warning
 
@@ -65,39 +77,37 @@ void *server_listener(void *arg) {
     if (send(*s, "Hello, world!", 13, 0) == -1) {
         perror("send");
     }
-    char client_msg[1024] = {0}; // '\0'
+    char client_msg[text_length] = {0}; // '\0'
 
     while (1) {
-        memset(client_msg, 0, 1024);
+        memset(client_msg, 0, text_length);
         size_t r = read(*s, client_msg, sizeof(client_msg));
         if (r != 0) {
             /* if the given command is TOP, the server will send the client the top value in the shared stack.*/
-            if(strcmp("TOP",client_msg) == EQUAL){
+            if (strcmp("TOP", client_msg) == EQUAL) {
 //                dup2(*s, 1);
-                printf("%s\n", client_msg);
+//                printf("%s\n", client_msg);
                 char *buff = top(&shared_st);
-                if (send(*s, buff, strlen(buff),0) == -1) {
+                if (send(*s, buff, strlen(buff), 0) == -1) {
                     perror("send");
                 }
-                printf("%s\n", buff);
+//                printf("%s\n", buff);
             }
-            /* if the given command is POP, the server will pop the top value in the shared stack */
-            else if (strcmp("POP",client_msg) == EQUAL) {
+                /* if the given command is POP, the server will pop the top value in the shared stack */
+            else if (strcmp("POP", client_msg) == EQUAL) {
                 pop(&shared_st);
             }
-            /* if the given command is PUSH,
-             * the server will push the attached text after the command to the shared stack.*/
-            else if (strncmp("PUSH",client_msg, 4) == EQUAL) {
-                char text[1024];
-                strncpy(text,client_msg+5, strlen(client_msg) - 4);
+                /* if the given command is PUSH,
+                 * the server will push the attached text after the command to the shared stack.*/
+            else if (strncmp("PUSH", client_msg, 4) == EQUAL) {
+                char text[text_length];
+                strncpy(text, client_msg + 5, strlen(client_msg) - 4);
                 push(&shared_st, text);
             }
-
         } else {
             break;
         }
     }
-
 }
 
 
@@ -106,11 +116,13 @@ int main(void) {
     shared_st = (Stack *) malloc(sizeof(Stack));
     shared_st->head = NULL;
 
+
+    int status;
     /** just for checking */
     push(&shared_st, "INIT");
 
     /* Connection methods start here -> */
-    int sockfd, new_fd;  // listen on sock_fd, new connection on new_fd
+      // listen on sock_fd, new connection on new_fd
     struct addrinfo hints, *servinfo, *p;
     struct sockaddr_storage their_addr; // connector's address information
     socklen_t sin_size;
@@ -165,6 +177,8 @@ int main(void) {
         exit(1);
     }
 
+    signal(SIGINT, sig_handler);
+
     sa.sa_handler = sigchld_handler; // reap all dead processes
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = SA_RESTART;
@@ -179,9 +193,9 @@ int main(void) {
      * also init unsigned long thread_num to be the index of each thread
      * that will serve the current connection with the client*/
     pthread_t client_h[BACKLOG];
-    unsigned long thread_num = 0;
+    unsigned long thread_num = 1;
 
-    while (1) {  // main accept() loop
+    while (server_running) {  // main accept() loop
         sin_size = sizeof their_addr;
         new_fd = accept(sockfd, (struct sockaddr *) &their_addr, &sin_size);
         if (new_fd == -1) {
@@ -197,12 +211,16 @@ int main(void) {
         /* in case we had more that 10 clients total(not at the same time) we can go point back to the previous threads
          * by module the curr index with backlog.*/
         thread_num %= BACKLOG;
+        printf("SOCK NUM : %d\n", new_fd);
         /*create new executable thread to handle the connection with the client (to reply hello world...)*/
         pthread_create(&client_h[thread_num], NULL, &server_listener, &new_fd);
         /* increasing the counter for next pthread in the queue*/
         thread_num++;
     }
-    close(new_fd);
+//    free_stack(&shared_st);
+
+    wait(&status);
+//    close(new_fd);
 
     return 0;
 }

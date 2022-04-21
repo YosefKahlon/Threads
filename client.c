@@ -6,6 +6,8 @@
 ** client.c -- a stream socket client demo
 */
 
+
+#define text_length 1024
 #define EQUAL 0
 
 #include <stdio.h>
@@ -93,33 +95,37 @@ int main(int argc, char *argv[])
     buf[numbytes] = '\0';
 
     printf("client: received '%s'\n",buf);
-
+    printf("CLIENT SOCK NUM : %d", sockfd);
 
 
     dup2(sockfd,1);
     while (1) {
-        char *command = NULL;
 
+        char *command = NULL;
         size_t size = 0;
 
         //s-size_t type to be able to receive value -1 // size of the input  line
         ssize_t line_size = getline(&command, &size, stdin);
         command[line_size - 1] = '\0';
+
+
         if(strcmp("EXIT", command) == EQUAL) {
             break;
         }
+
         if (strcmp("TOP", command) == EQUAL) {
 //            printf("%s", command);
 
             /* send the TOP command to the server */
-            send(sockfd,command,1024,0);
-            char top[1024];
+            send(sockfd,command,text_length,0);
+
+            char top[text_length];
             size_t numb;
             dup2(desc,1);
 
-            /* recieve the top stack value from server shared stack.
+            /* receive the top stack value from server shared stack.
              * IN CASE of empty stack -> return ERROR reply */
-            if ((numb = recv(sockfd, top, 1024, 0)) == -1) {
+            if ((numb = recv(sockfd, top, text_length, 0)) == -1) {
                 perror("recv");
                 exit(1);
             }
