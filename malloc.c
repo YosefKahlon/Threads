@@ -123,7 +123,7 @@ void my_free(void *ptr) {
 
 
 
-void *realloc(void *ptr, size_t size) {
+void *my_realloc(void *ptr, size_t size) {
     if (!ptr) {
         // NULL ptr. realloc should act like malloc.
         return my_malloc(size);

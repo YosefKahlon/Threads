@@ -2,9 +2,9 @@ CC = gcc
 
 
 
-all: server client stack.o queue.o
+all: server client stack.o queue.o malloc.o
 
-server: server.o stack.h queue.h
+server: server.o stack.h queue.h malloc.h
 	$(CC) -o server server.o -lpthread
 
 stack: stack.o
@@ -18,6 +18,12 @@ queue: queue.o
 
 queue.o: queue.c queue.h
 	$(CC) -c queue.c
+
+malloc: malloc.o
+	$(CC) -o malloc malloc.o
+
+malloc.o: malloc.c malloc.h
+	$(CC) -c malloc.c
 
 server.o: server.c stack.h
 	$(CC) -c server.c

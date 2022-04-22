@@ -10,31 +10,14 @@
 #include <sys/types.h>
 #include <assert.h>
 #include "malloc.h"
-
-//void *my_malloc(size_t size) {
-////    printf("address %zu \n", size);
-////    void *memory;
-////
-////    memory = sbrk((sizeof(size)));
-////    printf("address %p \n", memory);
-////    return memory;
-//
-//    void *p = sbrk(0);
-//    void *request = sbrk(size);
-//    if (request == (void*) -1) {
-//        return NULL; // sbrk failed.
-//    } else {
-//        assert(p == request); // Not thread safe.
-//        return p;
-//    }
-//}
-//void my_free(void *ptr){
-//
-//}
+//#include "malloc.c"
 
 
 void push(Stack **stack, char *text) {
-    node *new_node = (node *) malloc(sizeof(node));
+    /*old malloc */
+//    node *new_node = (node *) malloc(sizeof(node));
+    /*new malloc*/
+    node *new_node = (node *) my_malloc(sizeof(node));
     strcpy(new_node->data, text);
 
     if ((*stack)->head == NULL) {
@@ -57,19 +40,26 @@ void pop(Stack **stack) {
     }
 
     if ((*stack)->head->next == NULL) {
-        free((*stack)->head);
+        /*old free*/
+//        free((*stack)->head);
+        /*new free*/
+        my_free((*stack)->head);
         (*stack)->head = NULL;
     } else {
         node *top = (*stack)->head;
         (*stack)->head = (*stack)->head->next;
-        free(top);
+        /*old free*/
+//        free(top);
+        /*new free*/
+        my_free(top);
     }
     (*stack)->size--;
 }
 
 char *top(Stack **stack) {
-    if ((*stack)->size == 0) {
-
+    if((*stack)->size == 0){
+        perror("ERROR: Stack is empty");
+        return "ERROR: Stack is empty";
     }
     return (*stack)->head->data;
 }
@@ -79,8 +69,10 @@ void free_stack(Stack **stack) {
     while ((*stack)->size != 0) {
         pop(stack);
     }
-
-    free((*stack));
+    /*old free*/
+//    free((*stack));
+    /*new free*/
+    my_free((*stack));
 }
 
 void printStack(Stack **stack) {
@@ -91,35 +83,35 @@ void printStack(Stack **stack) {
 }
 
 
-int main() {
-
-
-    Stack *new_n = (Stack *) my_malloc(sizeof(Stack));
-    new_n->head = (node *) my_malloc(sizeof(node));
-    new_n->head->next = NULL;
-    strcpy(new_n->head->data, "ddd");
-
-    printf("data %s \n", new_n->head->data);
-    node *p = new_n->head;
-    //my_free(new_n->head);
-
-
-
-    printf("data %s \n", p->data);
-    new_n->head = (node *) my_malloc(sizeof(node));
-    strcpy(new_n->head->data, "test");
-
-
-
-//    Stack *s = (Stack *) malloc(sizeof(Stack));
-//    s->head = NULL;
+//int main() {
 //
-//    push(&s, "ok");
-//    push(&s,"bye");
-//    printStack(&s);
 //
-//    free_stack(&s);
-
-    return 0;
-
-}
+//    Stack *new_n = (Stack *) my_malloc(sizeof(Stack));
+//    new_n->head = (node *) my_malloc(sizeof(node));
+//    new_n->head->next = NULL;
+//    strcpy(new_n->head->data, "ddd");
+//
+//    printf("data %s \n", new_n->head->data);
+//    node *p = new_n->head;
+//    //my_free(new_n->head);
+//
+//
+//
+//    printf("data %s \n", p->data);
+//    new_n->head = (node *) my_malloc(sizeof(node));
+//    strcpy(new_n->head->data, "test");
+//
+//
+//
+////    Stack *s = (Stack *) malloc(sizeof(Stack));
+////    s->head = NULL;
+////
+////    push(&s, "ok");
+////    push(&s,"bye");
+////    printStack(&s);
+////
+////    free_stack(&s);
+//
+//    return 0;
+//
+//}

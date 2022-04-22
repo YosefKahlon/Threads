@@ -28,7 +28,8 @@
 #include "stack.c"
 #include "queue.h"
 #include "queue.c"
-#include "malloc.h"
+//#include "malloc.h"
+//#include "malloc.c"
 
 #define PORT "3490"  // the port users will be connecting to
 
@@ -135,7 +136,7 @@ void *server_listener(void *arg) {
                 pthread_mutex_unlock(&mutex);
 
                 /* ~START~ READ DATA CRITICAL SECTION */
-                sleep(4);
+
                 printf("READER NUM: %d\n", resource_counter);
                 char *buff = top(&shared_st);
                 if (send(*s, buff, strlen(buff), 0) == -1) {
@@ -165,7 +166,7 @@ void *server_listener(void *arg) {
                 pthread_mutex_unlock(&mutex);
 
                 /* ~START~ Delete DATA CRITICAL SECTION */
-                sleep(4);
+
                 printf("POPING\n");
                 pop(&shared_st);
                 /* ~END~ Delete DATA CRITICAL SECTION */
@@ -193,7 +194,7 @@ void *server_listener(void *arg) {
                 pthread_mutex_unlock(&mutex);
 
                 /* ~START~ Write DATA CRITICAL SECTION */
-                sleep(8);
+
                 printf("WRITING DATA\n");
                 char text[text_length];
                 strncpy(text, client_msg + 5, strlen(client_msg) - 4);
@@ -224,7 +225,7 @@ void *server_listener(void *arg) {
                 pthread_mutex_unlock(&q_mutex);
 
                 /* ~START~ READ DATA CRITICAL SECTION */
-                sleep(4);
+
                 printf("READER NUM: %d\n", queue_resource_counter);
                 char *buff = peek(&shared_qu);
                 if (send(*s, buff, strlen(buff), 0) == -1) {
@@ -254,7 +255,7 @@ void *server_listener(void *arg) {
                 pthread_mutex_unlock(&q_mutex);
 
                 /* ~START~ Delete DATA CRITICAL SECTION */
-                sleep(4);
+
                 printf("DEQUEUING\n");
                 dequeue(&shared_qu);
                 /* ~END~ Delete DATA CRITICAL SECTION */
@@ -283,7 +284,7 @@ void *server_listener(void *arg) {
                 pthread_mutex_unlock(&q_mutex);
 
                 /* ~START~ Write DATA CRITICAL SECTION */
-                sleep(8);
+
                 printf("WRITING QUEUE DATA\n");
                 char text[text_length];
                 strncpy(text, client_msg + 8, strlen(client_msg) - 7);
@@ -308,10 +309,10 @@ void *server_listener(void *arg) {
 
 int main(void) {
     /* INIT the server shared stack */
-    shared_st = (Stack *) malloc(sizeof(Stack));
+    shared_st = (Stack *) my_malloc(sizeof(Stack));
     shared_st->head = NULL;
 
-    shared_qu = (Queue *) malloc(sizeof(Queue));
+    shared_qu = (Queue *) my_malloc(sizeof(Queue));
     shared_qu->head = NULL;
 
 
@@ -391,7 +392,7 @@ int main(void) {
     /* initializing array of threads with size of 10(the max of concurrency clients).
      * also init unsigned long thread_num to be the index of each thread
      * that will serve the current connection with the client*/
-    pthread_t *client_h;
+    pthread_t client_h[BACKLOG];
     unsigned long thread_num = 1;
 
     while (server_running) {  // main accept() loop

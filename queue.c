@@ -6,10 +6,14 @@
 #include "stdlib.h"
 #include "stdio.h"
 #include "string.h"
+#include "malloc.h"
+#include "malloc.c"
 
 void enqueue(Queue **queue, char *text) {
-
-    node *new_node = (node *) malloc(sizeof(node));
+    /* old malloc */
+//    node *new_node = (node *) malloc(sizeof(node));
+    /* new malloc */
+    node *new_node = (node *) my_malloc(sizeof(node));
     strcpy(new_node->data, text);
 
     if ((*queue)->head == NULL) {
@@ -36,7 +40,10 @@ void dequeue(Queue **queue){
 
     node* top = (*queue)->head;
     (*queue)->head = (*queue)->head->next;
-    free(top);
+    /* old free */
+//    free(top);
+    /* new free */
+    my_free(top);
     (*queue)->size--;
 
 }
@@ -62,8 +69,10 @@ void free_queue(Queue** queue){
     while ((*queue)->size != 0) {
         dequeue(queue);
     }
-
-    free((*queue));
+    /* old free */
+//    free((*queue));
+    /* new free */
+    my_free((*queue));
 }
 
 
