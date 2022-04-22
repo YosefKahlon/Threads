@@ -7,21 +7,28 @@
 #include "stdlib.h"
 #include "string.h"
 #include <unistd.h>
+#include <sys/types.h>
+#include <assert.h>
+#include "malloc.h"
 
-
-void *my_malloc(size_t size) {
-    printf("address %zu \n", size);
-    void *memory;
-    node *new_node;
-    memory = sbrk((sizeof(size)));
-    printf("address %p \n", memory);
-    return memory;
-}
-
-//void* my_free(size_t size){
+//void *my_malloc(size_t size) {
+////    printf("address %zu \n", size);
+////    void *memory;
+////
+////    memory = sbrk((sizeof(size)));
+////    printf("address %p \n", memory);
+////    return memory;
 //
-//
-//
+//    void *p = sbrk(0);
+//    void *request = sbrk(size);
+//    if (request == (void*) -1) {
+//        return NULL; // sbrk failed.
+//    } else {
+//        assert(p == request); // Not thread safe.
+//        return p;
+//    }
+//}
+//void my_free(void *ptr){
 //
 //}
 
@@ -84,24 +91,35 @@ void printStack(Stack **stack) {
 }
 
 
-//int main() {
+int main() {
+
+
+    Stack *new_n = (Stack *) my_malloc(sizeof(Stack));
+    new_n->head = (node *) my_malloc(sizeof(node));
+    new_n->head->next = NULL;
+    strcpy(new_n->head->data, "ddd");
+
+    printf("data %s \n", new_n->head->data);
+    node *p = new_n->head;
+    //my_free(new_n->head);
+
+
+
+    printf("data %s \n", p->data);
+    new_n->head = (node *) my_malloc(sizeof(node));
+    strcpy(new_n->head->data, "test");
+    
+
+
+//    Stack *s = (Stack *) malloc(sizeof(Stack));
+//    s->head = NULL;
 //
+//    push(&s, "ok");
+//    push(&s,"bye");
+//    printStack(&s);
 //
-//    Stack *new_n = (Stack *) my_malloc(sizeof(Stack));
-//   // new_n->head = (node *) my_malloc(sizeof(node));
-//    // new_n->head->next = NULL;
-//    //strcpy(new_n->head->data, "ddd");
-//
-//    //printf("data %s \n", new_n->head->data);
-////    Stack *s = (Stack *) malloc(sizeof(Stack));
-////    s->head = NULL;
-////
-////    push(&s, "ok");
-////    push(&s,"bye");
-////    printStack(&s);
-////
-////    free_stack(&s);
-//
-//    return 0;
-//
-//}
+//    free_stack(&s);
+
+    return 0;
+
+}

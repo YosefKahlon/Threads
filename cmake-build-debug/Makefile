@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/c/Users/barak/Documents/GitHub/Threads
+CMAKE_SOURCE_DIR = /mnt/c/Users/97252/Documents/GitHub/Threads
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/c/Users/barak/Documents/GitHub/Threads/cmake-build-debug
+CMAKE_BINARY_DIR = /mnt/c/Users/97252/Documents/GitHub/Threads/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/barak/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles /mnt/c/Users/barak/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/97252/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles /mnt/c/Users/97252/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/barak/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/97252/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -149,6 +149,33 @@ client.s: client.c.s
 client.c.s:
 	$(MAKE) -f CMakeFiles/Threads.dir/build.make CMakeFiles/Threads.dir/client.c.s
 .PHONY : client.c.s
+
+malloc.o: malloc.c.o
+
+.PHONY : malloc.o
+
+# target to build an object file
+malloc.c.o:
+	$(MAKE) -f CMakeFiles/Threads.dir/build.make CMakeFiles/Threads.dir/malloc.c.o
+.PHONY : malloc.c.o
+
+malloc.i: malloc.c.i
+
+.PHONY : malloc.i
+
+# target to preprocess a source file
+malloc.c.i:
+	$(MAKE) -f CMakeFiles/Threads.dir/build.make CMakeFiles/Threads.dir/malloc.c.i
+.PHONY : malloc.c.i
+
+malloc.s: malloc.c.s
+
+.PHONY : malloc.s
+
+# target to generate assembly for a file
+malloc.c.s:
+	$(MAKE) -f CMakeFiles/Threads.dir/build.make CMakeFiles/Threads.dir/malloc.c.s
+.PHONY : malloc.c.s
 
 queue.o: queue.c.o
 
@@ -231,33 +258,6 @@ stack.c.s:
 	$(MAKE) -f CMakeFiles/Threads.dir/build.make CMakeFiles/Threads.dir/stack.c.s
 .PHONY : stack.c.s
 
-test.o: test.c.o
-
-.PHONY : test.o
-
-# target to build an object file
-test.c.o:
-	$(MAKE) -f CMakeFiles/Threads.dir/build.make CMakeFiles/Threads.dir/test.c.o
-.PHONY : test.c.o
-
-test.i: test.c.i
-
-.PHONY : test.i
-
-# target to preprocess a source file
-test.c.i:
-	$(MAKE) -f CMakeFiles/Threads.dir/build.make CMakeFiles/Threads.dir/test.c.i
-.PHONY : test.c.i
-
-test.s: test.c.s
-
-.PHONY : test.s
-
-# target to generate assembly for a file
-test.c.s:
-	$(MAKE) -f CMakeFiles/Threads.dir/build.make CMakeFiles/Threads.dir/test.c.s
-.PHONY : test.c.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -270,6 +270,9 @@ help:
 	@echo "... client.o"
 	@echo "... client.i"
 	@echo "... client.s"
+	@echo "... malloc.o"
+	@echo "... malloc.i"
+	@echo "... malloc.s"
 	@echo "... queue.o"
 	@echo "... queue.i"
 	@echo "... queue.s"
@@ -279,9 +282,6 @@ help:
 	@echo "... stack.o"
 	@echo "... stack.i"
 	@echo "... stack.s"
-	@echo "... test.o"
-	@echo "... test.i"
-	@echo "... test.s"
 .PHONY : help
 
 

@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/mnt/c/Users/97252/Documents/GitHub/Threads/malloc.h
+
+/mnt/c/Users/97252/Documents/GitHub/Threads/stack.c
+stack.h
+/mnt/c/Users/97252/Documents/GitHub/Threads/stack.h
+stdio.h
+/mnt/c/Users/97252/Documents/GitHub/Threads/stdio.h
+stdlib.h
+/mnt/c/Users/97252/Documents/GitHub/Threads/stdlib.h
+string.h
+/mnt/c/Users/97252/Documents/GitHub/Threads/string.h
+unistd.h
+-
+sys/types.h
+-
+assert.h
+-
+malloc.h
+/mnt/c/Users/97252/Documents/GitHub/Threads/malloc.h
+
+/mnt/c/Users/97252/Documents/GitHub/Threads/stack.h
+
