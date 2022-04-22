@@ -113,9 +113,9 @@ int main(int argc, char *argv[])
             break;
         }
 
-        if (strcmp("TOP", command) == EQUAL) {
+        if (strcmp("TOP", command) == EQUAL || strcmp("PEEK", command) == EQUAL ) {
 //            printf("%s", command);
-
+            printf("print client \n ");
             /* send the TOP command to the server */
             send(c_sock, command, text_length, 0);
 

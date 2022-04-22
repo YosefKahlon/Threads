@@ -23,8 +23,6 @@ void enqeue(Queue **queue, char *text) {
         last->next = new_node;
     }
     new_node->next = NULL;
-
-
     (*queue)->size++;
 
 
@@ -43,7 +41,7 @@ void dequeue(Queue **queue){
 
 }
 
-char *top_q(Queue **queue){
+char *peek(Queue **queue){
     if((*queue)->size == 0){
         perror("ERROR: Stack is empty");
         return "ERROR: Stack is empty";
@@ -61,7 +59,6 @@ void print_queue(Queue **queue) {
 }
 
 void free_queue(Queue** queue){
-
     while ((*queue)->size != 0) {
         dequeue(queue);
     }
@@ -70,17 +67,17 @@ void free_queue(Queue** queue){
 }
 
 
-int main() {
-
-    Queue *queue = (Queue *) malloc(sizeof(Queue));
-    queue->head = NULL;
-    enqeue(&queue, "hello");
-    enqeue(&queue, "hi");
-    enqeue(&queue, "bye");
-
-    printf("%s\n", top_q(&queue));
-
-    print_queue(&queue);
-    free_queue(&queue);
-}
+//int main() {
+//
+//    Queue *queue = (Queue *) malloc(sizeof(Queue));
+//    queue->head = NULL;
+//    enqeue(&queue, "hello");
+//    enqeue(&queue, "hi");
+//    enqeue(&queue, "bye");
+//
+//    printf("%s\n", top_q(&queue));
+//
+//    print_queue(&queue);
+//    free_queue(&queue);
+//}
 

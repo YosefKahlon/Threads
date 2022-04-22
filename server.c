@@ -26,12 +26,13 @@
 #include <signal.h>
 #include <pthread.h>
 #include "stack.c"
-
+#include "queue.c"
 
 #define PORT "3490"  // the port users will be connecting to
 
 #define BACKLOG 10     // how many pending connections queue will hold
 Stack *shared_st;
+Queue *shared_qu;
 int server_running = 1;
 int sockfd;
 int new_fd[BACKLOG];
@@ -42,9 +43,9 @@ pthread_cond_t con_push = PTHREAD_COND_INITIALIZER;
 int resource_counter = 0;
 
 
-
 void sig_handler(int signum) {
     free_stack(&shared_st);
+    free_queue(&shared_qu);
     server_running = 0;
     for (int i = 1; i < BACKLOG; ++i) {
         close(new_fd[i]);
@@ -105,7 +106,7 @@ void *server_listener(void *arg) {
             /* if the given command is TOP, the server will send the client the top value in the shared stack.*/
             if (strcmp("TOP", client_msg) == EQUAL) {
                 pthread_mutex_lock(&mutex); // lock the stack
-                while(resource_counter < 0) {
+                while (resource_counter < 0) {
                     printf("Waiting On READ DATA\n");
                     pthread_cond_wait(&con_top, &mutex);
                 }
@@ -187,6 +188,14 @@ void *server_listener(void *arg) {
 
                 pthread_mutex_unlock(&mutex); //unlock the stack
             }
+            else if (strncmp("PEEK", client_msg, 4) == EQUAL) {
+                printf("print  server \n ");
+                char *buff = peek(&shared_qu);
+                if (send(*s, buff, strlen(buff), 0) == -1) {
+                    perror("send");
+                }
+        }
+
         } else {
             break;
         }
@@ -199,14 +208,17 @@ int main(void) {
     shared_st = (Stack *) malloc(sizeof(Stack));
     shared_st->head = NULL;
 
+    shared_qu = (Queue *) malloc(sizeof(Queue));
+    shared_qu->head = NULL;
 
 
     int status;
     /** just for checking */
     push(&shared_st, "INIT");
+    enqeue(&shared_qu, "INIT");
 
     /* Connection methods start here -> */
-      // listen on sock_fd, new connection on new_fd
+    // listen on sock_fd, new connection on new_fd
     struct addrinfo hints, *servinfo, *p;
     struct sockaddr_storage their_addr; // connector's address information
     socklen_t sin_size;
@@ -286,8 +298,6 @@ int main(void) {
             perror("accept");
             continue;
         }
-
-
 
 
         inet_ntop(their_addr.ss_family,

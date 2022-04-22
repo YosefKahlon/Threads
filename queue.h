@@ -19,7 +19,7 @@ void enqueue(Queue** queue , char* text);
 
 void dequeue(Queue**  queue);
 
-char* top_q(Queue**  queue);
+char* peek(Queue**  queue);
 
 void print_queue(Queue** queue);
 
