@@ -9,15 +9,15 @@
 #include <unistd.h>
 
 
-//void *my_malloc(size_t size) {
-//    printf("address %zu \n", size);
-//    void *memory;
-//    node *new_node;
-//    memory = sbrk((sizeof(size)));
-//    printf("address %p \n", memory);
-//    return memory;
-//}
-//
+void *my_malloc(size_t size) {
+    printf("address %zu \n", size);
+    void *memory;
+    node *new_node;
+    memory = sbrk((sizeof(size)));
+    printf("address %p \n", memory);
+    return memory;
+}
+
 //void* my_free(size_t size){
 //
 //
