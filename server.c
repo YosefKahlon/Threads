@@ -26,23 +26,25 @@
 #include <signal.h>
 #include <pthread.h>
 #include "stack.c"
-#include "queue.c"
-#include "queue.h"
+
+
 #define PORT "3490"  // the port users will be connecting to
 
 #define BACKLOG 10     // how many pending connections queue will hold
 Stack *shared_st;
-Queue *shared_qu;
 int server_running = 1;
 int sockfd;
 int new_fd[BACKLOG];
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t mutex2 = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t con_top = PTHREAD_COND_INITIALIZER;
+pthread_cond_t con_pop = PTHREAD_COND_INITIALIZER;
+pthread_cond_t con_push = PTHREAD_COND_INITIALIZER;
+int resource_counter = 0;
+
 
 
 void sig_handler(int signum) {
     free_stack(&shared_st);
-    free_queue(&shared_qu);
     server_running = 0;
     for (int i = 1; i < BACKLOG; ++i) {
         close(new_fd[i]);
@@ -51,7 +53,6 @@ void sig_handler(int signum) {
 
     //destroy the lock
     pthread_mutex_destroy(&mutex);
-    pthread_mutex_destroy(&mutex2);
     exit(1);
 }
 
@@ -99,75 +100,93 @@ void *server_listener(void *arg) {
             exit(1);
         }
         if (r != 0) {
+
+            /*------------ TOP ------------*/
             /* if the given command is TOP, the server will send the client the top value in the shared stack.*/
             if (strcmp("TOP", client_msg) == EQUAL) {
                 pthread_mutex_lock(&mutex); // lock the stack
+                while(resource_counter < 0) {
+                    printf("Waiting On READ DATA\n");
+                    pthread_cond_wait(&con_top, &mutex);
+                }
+                resource_counter++;
+                pthread_mutex_unlock(&mutex);
 
-
-//                dup2(*s, 1);
-//                printf("%s\n", client_msg);
+                /* ~START~ READ DATA CRITICAL SECTION */
+                sleep(4);
+                printf("READER NUM: %d\n", resource_counter);
                 char *buff = top(&shared_st);
                 if (send(*s, buff, strlen(buff), 0) == -1) {
                     perror("send");
                 }
-//                printf("%s\n", buff);
+                /* ~END~ READ DATA CRITICAL SECTION */
 
+                pthread_mutex_lock(&mutex);
+                printf("finish READER NUM: %d\n", resource_counter);
+                resource_counter--;
+                if (resource_counter == 0) {
+                    pthread_cond_signal(&con_pop);
+                    pthread_cond_signal(&con_push);
+                }
                 pthread_mutex_unlock(&mutex); //unlock the stack
             }
+                /*------------ POP ------------*/
                 /* if the given command is POP, the server will pop the top value in the shared stack */
             else if (strcmp("POP", client_msg) == EQUAL) {
+
                 pthread_mutex_lock(&mutex); // lock the stack
+                while (resource_counter != 0) {
+                    printf("Waiting on POP DATA\n");
+                    pthread_cond_wait(&con_pop, &mutex);
+                }
+                resource_counter = -1;
+                pthread_mutex_unlock(&mutex);
 
-
+                /* ~START~ Delete DATA CRITICAL SECTION */
+                sleep(4);
+                printf("POPING\n");
                 pop(&shared_st);
+                /* ~END~ Delete DATA CRITICAL SECTION */
+
+                pthread_mutex_lock(&mutex); // lock the mutex
+
+                resource_counter = 0;
+                pthread_cond_broadcast(&con_top);
+                pthread_cond_signal(&con_pop);
+                pthread_cond_signal(&con_push);
+
                 pthread_mutex_unlock(&mutex); //unlock the stack
             }
+                /*------------ PUSH ------------*/
                 /* if the given command is PUSH,
                  * the server will push the attached text after the command to the shared stack.*/
             else if (strncmp("PUSH", client_msg, 4) == EQUAL) {
                 pthread_mutex_lock(&mutex); // lock the stack
+                while (resource_counter != 0) {
+                    printf("waiting on push data\n");
+                    pthread_cond_wait(&con_push, &mutex);
+                }
+                resource_counter = -2;
 
+                pthread_mutex_unlock(&mutex);
+
+                /* ~START~ Write DATA CRITICAL SECTION */
+                sleep(8);
+                printf("WRITING DATA\n");
                 char text[text_length];
                 strncpy(text, client_msg + 5, strlen(client_msg) - 4);
                 push(&shared_st, text);
+                /* ~END~ Write DATA CRITICAL SECTION */
+
+                pthread_mutex_lock(&mutex);
+                resource_counter = 0;
+                // notify all other waiting threads
+                pthread_cond_broadcast(&con_top);
+                pthread_cond_signal(&con_pop);
+                pthread_cond_signal(&con_push);
 
                 pthread_mutex_unlock(&mutex); //unlock the stack
             }
-
-            /* if the given command is TOP_Q, the server will send the client the top value in the shared queue.*/
-            if (strcmp("TOP_Q", client_msg) == EQUAL) {
-               // pthread_mutex_lock(&mutex2); // lock the queueu
-
-
-//                dup2(*s, 1);
-//                printf("%s\n", client_msg);
-                char *buff = top_q(&shared_qu);
-                if (send(*s, buff, strlen(buff), 0) == -1) {
-                    perror("send");
-                }
-                printf("%s\n", buff);
-
-               // pthread_mutex_unlock(&mutex2); //unlock the queue
-            }
-                /* if the given command is DEQUEUE, the server will dequeue the top value in the shared queue */
-            else if (strcmp("DEQUEUE", client_msg) == EQUAL) {
-              //  pthread_mutex_lock(&mutex2); // lock the stack
-
-
-                dequeue(&shared_qu);
-              //  pthread_mutex_unlock(&mutex2); //unlock the stack
-            }
-                /* if the given command is ENQUEUE,
-                 * the server will push the attached text after the command to the shared queue.*/
-            else if (strncmp("ENQUEUE", client_msg, 7) == EQUAL) {
-             //   pthread_mutex_lock(&mutex2); // lock the stack
-
-                char text[text_length];
-                strncpy(text, client_msg + 8, strlen(client_msg) - 7);
-                enqeue(&shared_qu ,text);
-           //     pthread_mutex_unlock(&mutex2); //unlock the stack
-            }
-
         } else {
             break;
         }
@@ -180,19 +199,14 @@ int main(void) {
     shared_st = (Stack *) malloc(sizeof(Stack));
     shared_st->head = NULL;
 
-    /* INIT the server shared queue */
-    shared_qu = (Queue *) malloc(sizeof(Queue));
-    shared_qu->head = NULL;
 
 
     int status;
     /** just for checking */
     push(&shared_st, "INIT");
 
-    enqeue(&shared_qu, "INIT");
-
     /* Connection methods start here -> */
-    // listen on sock_fd, new connection on new_fd
+      // listen on sock_fd, new connection on new_fd
     struct addrinfo hints, *servinfo, *p;
     struct sockaddr_storage their_addr; // connector's address information
     socklen_t sin_size;
@@ -272,6 +286,8 @@ int main(void) {
             perror("accept");
             continue;
         }
+
+
 
 
         inet_ntop(their_addr.ss_family,
