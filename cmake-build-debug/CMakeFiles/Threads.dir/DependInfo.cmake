@@ -4,11 +4,11 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/mnt/c/Users/97252/Documents/GitHub/Threads/client.c" "/mnt/c/Users/97252/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles/Threads.dir/client.c.o"
-  "/mnt/c/Users/97252/Documents/GitHub/Threads/queue.c" "/mnt/c/Users/97252/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles/Threads.dir/queue.c.o"
-  "/mnt/c/Users/97252/Documents/GitHub/Threads/server.c" "/mnt/c/Users/97252/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles/Threads.dir/server.c.o"
-  "/mnt/c/Users/97252/Documents/GitHub/Threads/stack.c" "/mnt/c/Users/97252/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles/Threads.dir/stack.c.o"
-  "/mnt/c/Users/97252/Documents/GitHub/Threads/test.c" "/mnt/c/Users/97252/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles/Threads.dir/test.c.o"
+  "/mnt/c/Users/barak/Documents/GitHub/Threads/client.c" "/mnt/c/Users/barak/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles/Threads.dir/client.c.o"
+  "/mnt/c/Users/barak/Documents/GitHub/Threads/queue.c" "/mnt/c/Users/barak/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles/Threads.dir/queue.c.o"
+  "/mnt/c/Users/barak/Documents/GitHub/Threads/server.c" "/mnt/c/Users/barak/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles/Threads.dir/server.c.o"
+  "/mnt/c/Users/barak/Documents/GitHub/Threads/stack.c" "/mnt/c/Users/barak/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles/Threads.dir/stack.c.o"
+  "/mnt/c/Users/barak/Documents/GitHub/Threads/test.c" "/mnt/c/Users/barak/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles/Threads.dir/test.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

@@ -7,7 +7,7 @@
 #include "stdio.h"
 #include "string.h"
 
-void enqeue(Queue **queue, char *text) {
+void enqueue(Queue **queue, char *text) {
 
     node *new_node = (node *) malloc(sizeof(node));
     strcpy(new_node->data, text);
