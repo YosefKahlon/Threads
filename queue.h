@@ -15,7 +15,7 @@ typedef struct Queue {
 
 } Queue;
 
-void enqeue(Queue** queue , char* text);
+void enqueue(Queue** queue , char* text);
 
 void dequeue(Queue**  queue);
 
