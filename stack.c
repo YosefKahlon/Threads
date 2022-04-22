@@ -31,6 +31,7 @@ void pop(Stack **stack) {
 
     if ((*stack)->head->next == NULL) {
         free((*stack)->head);
+        (*stack)->head = NULL;
     } else {
         node *top = (*stack)->head;
         (*stack)->head = (*stack)->head->next;
