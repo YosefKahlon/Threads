@@ -317,9 +317,6 @@ int main(void) {
 
 
     int status;
-    /** just for checking */
-    push(&shared_st, "S_INIT");
-    enqueue(&shared_qu, "Q_INIT");
 
     /* Connection methods start here -> */
     // listen on sock_fd, new connection on new_fd

@@ -20,7 +20,7 @@ void *global_base = NULL;
  *  When we get a request of some size, we iterate through our linked list to see if there's a free block that's large enough.
  *
  */
-struct block_meta *find_free_block(struct block_meta **last, size_t size) {
+struct block_meta *search_for_free_block(struct block_meta **last, size_t size) {
     struct block_meta *current = global_base;
     while (current && !(current->free && current->size >= size)) {
         *last = current;
@@ -37,7 +37,7 @@ struct block_meta *find_free_block(struct block_meta **last, size_t size) {
  * from the OS using sbrk and add our new block to the end of the linked list.
  *
  */
-struct block_meta *request_space(struct block_meta *last, size_t size) {
+struct block_meta *ask_for_space(struct block_meta *last, size_t size) {
     struct block_meta *block;
     block = sbrk(0);
     void *request = sbrk(size + META_SIZE);
@@ -72,16 +72,16 @@ void *my_malloc(size_t size) {
     }
 
     if (!global_base) { // First call.
-        block = request_space(NULL, size);
+        block = ask_for_space(NULL, size);
         if (!block) {
             return NULL;
         }
         global_base = block;
     } else {
         struct block_meta *last = global_base;
-        block = find_free_block(&last, size);
+        block = search_for_free_block(&last, size);
         if (!block) { // Failed to find free block.
-            block = request_space(last, size);
+            block = ask_for_space(last, size);
             if (!block) {
                 return NULL;
             }
@@ -97,7 +97,7 @@ void *my_malloc(size_t size) {
 /**
  * Method to get the address of our struct in multiple places in our code.
  */
-struct block_meta *get_block_ptr(void *ptr) {
+struct block_meta *get_block_pointer(void *ptr) {
     return (struct block_meta *) ptr - 1;
 }
 
@@ -112,7 +112,7 @@ void my_free(void *ptr) {
         return;
     }
 
-    struct block_meta *block_ptr = get_block_ptr(ptr);
+    struct block_meta *block_ptr = get_block_pointer(ptr);
     assert(block_ptr->free == 0);
     block_ptr->free = 1;
 
@@ -129,7 +129,7 @@ void *my_realloc(void *ptr, size_t size) {
         return my_malloc(size);
     }
 
-    struct block_meta *block_ptr = get_block_ptr(ptr);
+    struct block_meta *block_ptr = get_block_pointer(ptr);
     if (block_ptr->size >= size) {
         // We have enough space. Could free some once we implement split.
         return ptr;
