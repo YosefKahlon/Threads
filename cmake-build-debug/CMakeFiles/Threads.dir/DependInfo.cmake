@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_CHECK_C
   "/mnt/c/Users/97252/Documents/GitHub/Threads/queue.c" "/mnt/c/Users/97252/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles/Threads.dir/queue.c.o"
   "/mnt/c/Users/97252/Documents/GitHub/Threads/server.c" "/mnt/c/Users/97252/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles/Threads.dir/server.c.o"
   "/mnt/c/Users/97252/Documents/GitHub/Threads/stack.c" "/mnt/c/Users/97252/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles/Threads.dir/stack.c.o"
+  "/mnt/c/Users/97252/Documents/GitHub/Threads/test.c" "/mnt/c/Users/97252/Documents/GitHub/Threads/cmake-build-debug/CMakeFiles/Threads.dir/test.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

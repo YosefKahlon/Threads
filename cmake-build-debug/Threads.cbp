@@ -94,6 +94,9 @@
 		<Unit filename="/mnt/c/Users/97252/Documents/GitHub/Threads/stack.h">
 			<Option target="Threads"/>
 		</Unit>
+		<Unit filename="/mnt/c/Users/97252/Documents/GitHub/Threads/test.c">
+			<Option target="Threads"/>
+		</Unit>
 		<Unit filename="/mnt/c/Users/97252/Documents/GitHub/Threads/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>

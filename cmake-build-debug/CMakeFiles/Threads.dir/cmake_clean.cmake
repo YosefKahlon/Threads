@@ -3,6 +3,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/Threads.dir/queue.c.o"
   "CMakeFiles/Threads.dir/server.c.o"
   "CMakeFiles/Threads.dir/stack.c.o"
+  "CMakeFiles/Threads.dir/test.c.o"
   "Threads"
   "Threads.pdb"
 )
