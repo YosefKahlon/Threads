@@ -152,7 +152,7 @@ void *realloc(void *ptr, size_t size) {
  *
  * Calloc is just malloc that initializes the memory to 0
  */
-void *calloc(size_t nelem, size_t elsize) {
+void *my_calloc(size_t nelem, size_t elsize) {
     size_t size = nelem * elsize;
     void *ptr = my_malloc(size);
     memset(ptr, 0, size);
