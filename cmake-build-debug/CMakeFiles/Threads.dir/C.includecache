@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/mnt/c/Users/97252/Documents/GitHub/Threads/queue.c
+queue.h
+/mnt/c/Users/97252/Documents/GitHub/Threads/queue.h
+stdlib.h
+/mnt/c/Users/97252/Documents/GitHub/Threads/stdlib.h
+stdio.h
+/mnt/c/Users/97252/Documents/GitHub/Threads/stdio.h
+string.h
+/mnt/c/Users/97252/Documents/GitHub/Threads/string.h
+
+/mnt/c/Users/97252/Documents/GitHub/Threads/queue.h
+stack.h
+/mnt/c/Users/97252/Documents/GitHub/Threads/stack.h
+
+/mnt/c/Users/97252/Documents/GitHub/Threads/stack.h
+

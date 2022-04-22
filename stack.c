@@ -6,6 +6,25 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
+#include <unistd.h>
+
+
+//void *my_malloc(size_t size) {
+//    printf("address %zu \n", size);
+//    void *memory;
+//    node *new_node;
+//    memory = sbrk((sizeof(size)));
+//    printf("address %p \n", memory);
+//    return memory;
+//}
+//
+//void* my_free(size_t size){
+//
+//
+//
+//
+//}
+
 
 void push(Stack **stack, char *text) {
     node *new_node = (node *) malloc(sizeof(node));
@@ -22,6 +41,7 @@ void push(Stack **stack, char *text) {
     (*stack)->size++;
 
 }
+
 
 void pop(Stack **stack) {
     if ((*stack)->head == NULL) {
@@ -42,8 +62,7 @@ void pop(Stack **stack) {
 
 char *top(Stack **stack) {
     if ((*stack)->size == 0) {
-        perror("ERROR: Stack is empty");
-        return "ERROR: Stack is empty";
+
     }
     return (*stack)->head->data;
 }
@@ -67,14 +86,21 @@ void printStack(Stack **stack) {
 
 //int main() {
 //
-//    Stack *s = (Stack *) malloc(sizeof(Stack));
-//    s->head = NULL;
 //
-//    push(&s, "ok");
-//    push(&s,"bye");
-//    printStack(&s);
+//    Stack *new_n = (Stack *) my_malloc(sizeof(Stack));
+//   // new_n->head = (node *) my_malloc(sizeof(node));
+//    // new_n->head->next = NULL;
+//    //strcpy(new_n->head->data, "ddd");
 //
-//    free_stack(&s);
+//    //printf("data %s \n", new_n->head->data);
+////    Stack *s = (Stack *) malloc(sizeof(Stack));
+////    s->head = NULL;
+////
+////    push(&s, "ok");
+////    push(&s,"bye");
+////    printStack(&s);
+////
+////    free_stack(&s);
 //
 //    return 0;
 //

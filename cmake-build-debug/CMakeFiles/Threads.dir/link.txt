@@ -1,1 +1,1 @@
-/usr/bin/cc -g   CMakeFiles/Threads.dir/main.c.o CMakeFiles/Threads.dir/stack.c.o CMakeFiles/Threads.dir/client.c.o CMakeFiles/Threads.dir/server.c.o  -o Threads 
+/usr/bin/cc -g   CMakeFiles/Threads.dir/stack.c.o CMakeFiles/Threads.dir/client.c.o CMakeFiles/Threads.dir/server.c.o CMakeFiles/Threads.dir/queue.c.o  -o Threads 
