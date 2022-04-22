@@ -108,7 +108,7 @@ int main() {
     printf("data %s \n", p->data);
     new_n->head = (node *) my_malloc(sizeof(node));
     strcpy(new_n->head->data, "test");
-    
+
 
 
 //    Stack *s = (Stack *) malloc(sizeof(Stack));
