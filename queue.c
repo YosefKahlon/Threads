@@ -70,17 +70,17 @@ void free_queue(Queue** queue){
 }
 
 
-//int main() {
-//
-//    Queue *queue = (Queue *) malloc(sizeof(Queue));
-//    queue->head = NULL;
-//    enqeue(&queue, "hello");
-//    enqeue(&queue, "hi");
-//    enqeue(&queue, "bye");
-//
-//    printf("%s\n", top_q(&queue));
-//
-//    print_queue(&queue);
-//    free_queue(&queue);
-//}
+int main() {
+
+    Queue *queue = (Queue *) malloc(sizeof(Queue));
+    queue->head = NULL;
+    enqeue(&queue, "hello");
+    enqeue(&queue, "hi");
+    enqeue(&queue, "bye");
+
+    printf("%s\n", top_q(&queue));
+
+    print_queue(&queue);
+    free_queue(&queue);
+}
 
