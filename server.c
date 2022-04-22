@@ -36,6 +36,10 @@ int server_running = 1;
 int sockfd;
 int new_fd[BACKLOG];
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t con_top = PTHREAD_COND_INITIALIZER;
+pthread_cond_t con_pop = PTHREAD_COND_INITIALIZER;
+pthread_cond_t con_push = PTHREAD_COND_INITIALIZER;
+int resource_counter = 0;
 
 
 
@@ -96,37 +100,90 @@ void *server_listener(void *arg) {
             exit(1);
         }
         if (r != 0) {
+
+            /*------------ TOP ------------*/
             /* if the given command is TOP, the server will send the client the top value in the shared stack.*/
             if (strcmp("TOP", client_msg) == EQUAL) {
                 pthread_mutex_lock(&mutex); // lock the stack
+                while(resource_counter < 0) {
+                    printf("Waiting On READ DATA\n");
+                    pthread_cond_wait(&con_top, &mutex);
+                }
+                resource_counter++;
+                pthread_mutex_unlock(&mutex);
 
-
-//                dup2(*s, 1);
-//                printf("%s\n", client_msg);
+                /* ~START~ READ DATA CRITICAL SECTION */
+                sleep(4);
+                printf("READER NUM: %d\n", resource_counter);
                 char *buff = top(&shared_st);
                 if (send(*s, buff, strlen(buff), 0) == -1) {
                     perror("send");
                 }
-//                printf("%s\n", buff);
+                /* ~END~ READ DATA CRITICAL SECTION */
 
-                 pthread_mutex_unlock(&mutex); //unlock the stack
-            }
-                /* if the given command is POP, the server will pop the top value in the shared stack */
-            else if (strcmp("POP", client_msg) == EQUAL) {
-                pthread_mutex_lock(&mutex); // lock the stack
-
-
-                pop(&shared_st);
+                pthread_mutex_lock(&mutex);
+                printf("finish READER NUM: %d\n", resource_counter);
+                resource_counter--;
+                if (resource_counter == 0) {
+                    pthread_cond_signal(&con_pop);
+                    pthread_cond_signal(&con_push);
+                }
                 pthread_mutex_unlock(&mutex); //unlock the stack
             }
+                /*------------ POP ------------*/
+                /* if the given command is POP, the server will pop the top value in the shared stack */
+            else if (strcmp("POP", client_msg) == EQUAL) {
+
+                pthread_mutex_lock(&mutex); // lock the stack
+                while (resource_counter != 0) {
+                    printf("Waiting on POP DATA\n");
+                    pthread_cond_wait(&con_pop, &mutex);
+                }
+                resource_counter = -1;
+                pthread_mutex_unlock(&mutex);
+
+                /* ~START~ Delete DATA CRITICAL SECTION */
+                sleep(4);
+                printf("POPING\n");
+                pop(&shared_st);
+                /* ~END~ Delete DATA CRITICAL SECTION */
+
+                pthread_mutex_lock(&mutex); // lock the mutex
+
+                resource_counter = 0;
+                pthread_cond_broadcast(&con_top);
+                pthread_cond_signal(&con_pop);
+                pthread_cond_signal(&con_push);
+
+                pthread_mutex_unlock(&mutex); //unlock the stack
+            }
+                /*------------ PUSH ------------*/
                 /* if the given command is PUSH,
                  * the server will push the attached text after the command to the shared stack.*/
             else if (strncmp("PUSH", client_msg, 4) == EQUAL) {
                 pthread_mutex_lock(&mutex); // lock the stack
+                while (resource_counter != 0) {
+                    printf("waiting on push data\n");
+                    pthread_cond_wait(&con_push, &mutex);
+                }
+                resource_counter = -2;
 
+                pthread_mutex_unlock(&mutex);
+
+                /* ~START~ Write DATA CRITICAL SECTION */
+                sleep(8);
+                printf("WRITING DATA\n");
                 char text[text_length];
                 strncpy(text, client_msg + 5, strlen(client_msg) - 4);
                 push(&shared_st, text);
+                /* ~END~ Write DATA CRITICAL SECTION */
+
+                pthread_mutex_lock(&mutex);
+                resource_counter = 0;
+                // notify all other waiting threads
+                pthread_cond_broadcast(&con_top);
+                pthread_cond_signal(&con_pop);
+                pthread_cond_signal(&con_push);
 
                 pthread_mutex_unlock(&mutex); //unlock the stack
             }
