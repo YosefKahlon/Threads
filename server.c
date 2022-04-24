@@ -28,6 +28,7 @@
 #include "stack.c"
 #include "queue.h"
 #include "queue.c"
+#include "assert.h"
 //#include "malloc.h"
 //#include "malloc.c"
 
@@ -35,6 +36,7 @@
 
 #define BACKLOG 10     // how many pending connections queue will hold
 Stack *shared_st;
+Stack *test_st;
 Queue *shared_qu;
 int server_running = 1;
 int sockfd;
@@ -54,6 +56,46 @@ pthread_cond_t con_dequeue = PTHREAD_COND_INITIALIZER;
 pthread_cond_t con_enqueue = PTHREAD_COND_INITIALIZER;
 int queue_resource_counter = 0;
 
+int test() {
+
+    test_st = (Stack *) my_malloc(sizeof (Stack));
+
+    /* checking allocation correctness */
+    void * new_address= sbrk(0);
+    assert((int *)test_st != (int *)new_address);
+
+    printf("Passed Allocation tests\n");
+    /* push one string to stack.
+     * check if the top of the stack matches the last value pushed, expected --> "test1"*/
+    push(&test_st, "test1");
+    assert(strcmp(top(&test_st), "test1") == 0);
+    /* push another string to the stack.
+     * check if the top value updated, expected --> "test2".
+     * check if the size updated, expected --> 2.*/
+    push(&test_st, "test2");
+    assert(test_st->size == 2);
+    assert(strcmp(top(&test_st), "test2") == 0);
+
+
+    /* POP until stack is empty
+     * check size, expected --> 0
+     * check top on empty stack, expected --> ERROR message on empty stack*/
+    pop(&test_st);
+    pop(&test_st);
+    assert(test_st->size == 0);
+    assert(strcmp(top(&test_st),"ERROR: Stack is empty") == EQUAL);
+
+    /* check case when call pop on empty stack,
+     * expected --> no change on stack, return string with ERROR prefix*/
+    pop(&test_st);
+    assert(test_st->size == 0);
+    assert(strcmp(top(&test_st),"ERROR: Stack is empty") == EQUAL);
+
+    free_stack(&test_st);
+    printf("Passed all stack tests.\n");
+    printf("server initializing...\n");
+    return 1;
+}
 
 void sig_handler(int signum) {
     free_stack(&shared_st);
@@ -308,6 +350,7 @@ void *server_listener(void *arg) {
 
 
 int main(void) {
+    int test_status = test();
     /* INIT the server shared stack */
     shared_st = (Stack *) my_malloc(sizeof(Stack));
     shared_st->head = NULL;

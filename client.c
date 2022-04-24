@@ -19,6 +19,7 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include "assert.h"
 
 #include <arpa/inet.h>
 
@@ -129,6 +130,8 @@ int main(int argc, char *argv[])
                 perror("recv");
                 exit(1);
             }
+
+
             top[numb] = '\0';
 
             /* check if the reply is an error or valid output (for prefix management)*/

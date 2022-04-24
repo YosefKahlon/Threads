@@ -43,17 +43,28 @@ EXIT kill this dialog with the server.
 
 
 ### Server
-Server, open socket and listen for up to 10 client (multi-threads)
+Server, run several tests to check allocation and server-stack communication. 
+open socket and listen for up to 10 client (multi-threads)
 The server handles the client request for a stack / queue
-Using mutex to synchronize between the client.
+Using mutex and conditions in order to synchronize between the clients.
+
+![img_1.png](img_1.png)
 
 ### client
-Client, send request to server to use stack / queue.
+Client, send commands to the server to manipulate the server stack / queue.
 
+### Test
+Test methods such as allocation correctness, manipulations on shared stack (push, pop, top, size).
 
+![img.png](img.png)
+
+### Malloc/Free
+- Malloc, my_malloc func is implemented by sbrk() method.
+- Free, my_free func is simply updating our memory management structure, to free the used blocks.
 
 ### how to use :
+ - Open terminal for the server and run it with ./server.
+ - Open few more terminals for client ./client localhost.
+ - in the client terminal write the command in uppercase and wait for the server response.
 
-open terminal for the server and run it with ./server
-open few more terminals for client ./client localhost
-now in the client terminal write the command in uppercase and wait for the server response.
+![img_2.png](img_2.png)

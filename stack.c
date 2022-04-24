@@ -35,7 +35,7 @@ void push(Stack **stack, char *text) {
 
 void pop(Stack **stack) {
     if ((*stack)->head == NULL) {
-        printf("Empty stack \n");
+//        printf("Empty stack \n");
         return;
     }
 
@@ -58,7 +58,7 @@ void pop(Stack **stack) {
 
 char *top(Stack **stack) {
     if((*stack)->size == 0){
-        perror("ERROR: Stack is empty");
+//        perror("ERROR: Stack is empty");
         return "ERROR: Stack is empty";
     }
     return (*stack)->head->data;
