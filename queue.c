@@ -34,7 +34,7 @@ void enqueue(Queue **queue, char *text) {
 
 void dequeue(Queue **queue){
     if((*queue)->size == 0){
-        perror("ERROR: Stack is empty");
+        perror("ERROR: Queue is empty");
         return;
     }
 
@@ -50,8 +50,8 @@ void dequeue(Queue **queue){
 
 char *peek(Queue **queue){
     if((*queue)->size == 0){
-        perror("ERROR: Stack is empty");
-        return "ERROR: Stack is empty";
+        perror("ERROR: Queue is empty");
+        return "ERROR: Queue is empty";
     }
 
     return (*queue)->head->data;

@@ -149,6 +149,7 @@ void *send_hello(void *arg) {
 }
 
 void *server_listener(void *arg) {
+    pthread_detach(pthread_self());
     int *s = (int *) arg;
     if (send(*s, "Hello, world!", 13, 0) == -1) {
         perror("send");
