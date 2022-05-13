@@ -13,7 +13,7 @@
 
 #include <stdio.h>
 #include "stack.h"
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
@@ -29,8 +29,6 @@
 #include "queue.h"
 #include "queue.c"
 #include "assert.h"
-//#include "malloc.h"
-//#include "malloc.c"
 
 #define PORT "3490"  // the port users will be connecting to
 
@@ -58,7 +56,7 @@ int queue_resource_counter = 0;
 
 int test() {
 
-    test_st = (Stack *) my_malloc(sizeof (Stack));
+    test_st = (Stack *) malloc(sizeof(Stack));
 
     /* checking allocation correctness */
     void * new_address= sbrk(0);
@@ -106,6 +104,7 @@ void sig_handler(int signum) {
     }
     close(sockfd);
 
+
         //destroy the lock
     pthread_mutex_destroy(&mutex);
     pthread_mutex_destroy(&q_mutex);
@@ -116,6 +115,7 @@ void sig_handler(int signum) {
     pthread_cond_destroy(&con_peek);
     pthread_cond_destroy(&con_dequeue);
     pthread_cond_destroy(&con_enqueue);
+
     exit(1);
 }
 
@@ -353,10 +353,10 @@ void *server_listener(void *arg) {
 int main(void) {
     int test_status = test();
     /* INIT the server shared stack */
-    shared_st = (Stack *) my_malloc(sizeof(Stack));
+    shared_st = (Stack *) malloc(sizeof(Stack));
     shared_st->head = NULL;
 
-    shared_qu = (Queue *) my_malloc(sizeof(Queue));
+    shared_qu = (Queue *) malloc(sizeof(Queue));
     shared_qu->head = NULL;
 
 

@@ -6,6 +6,8 @@
 #define THREADS_QUEUE_HPP
 
 #include "stack.h"
+#include "malloc.h"
+//#include "malloc.c"
 
 
 typedef struct Queue {

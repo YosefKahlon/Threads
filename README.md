@@ -59,8 +59,8 @@ Test methods such as allocation correctness, manipulations on shared stack (push
 ![img.png](img.png)
 
 ### Malloc/Free
-- Malloc, my_malloc func is implemented by sbrk() method.
-- Free, my_free func is simply updating our memory management structure, to free the used blocks.
+- Malloc, malloc func is implemented by sbrk() method.
+- Free, free func is simply updating our memory management structure, to free the used blocks.
 
 ### how to use :
  - Open terminal for the server and run it with ./server.

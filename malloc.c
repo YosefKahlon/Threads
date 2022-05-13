@@ -64,7 +64,7 @@ struct block_meta *ask_for_space(struct block_meta *last, size_t size) {
  If we can, then we do;
  if we can't, then we request space and use the new space.
  */
-void *my_malloc(size_t size) {
+void *malloc(size_t size) {
     struct block_meta *block;
 
     if (size <= 0) {
@@ -107,7 +107,7 @@ struct block_meta *get_block_pointer(void *ptr) {
  * by using a linked list to save free block after we used them .
  *
  */
-void my_free(void *ptr) {
+void free(void *ptr) {
     if (!ptr) {
         return;
     }
@@ -123,10 +123,10 @@ void my_free(void *ptr) {
 
 
 
-void *my_realloc(void *ptr, size_t size) {
+void *realloc(void *ptr, size_t size) {
     if (!ptr) {
         // NULL ptr. realloc should act like malloc.
-        return my_malloc(size);
+        return malloc(size);
     }
 
     struct block_meta *block_ptr = get_block_pointer(ptr);
@@ -138,12 +138,12 @@ void *my_realloc(void *ptr, size_t size) {
     // Need to really realloc. Malloc new space and free old space.
     // Then copy old data to new space.
     void *new_ptr;
-    new_ptr = my_malloc(size);
+    new_ptr = malloc(size);
     if (!new_ptr) {
         return NULL;
     }
     memcpy(new_ptr, ptr, block_ptr->size);
-    my_free(ptr);
+    free(ptr);
     return new_ptr;
 }
 
@@ -152,9 +152,9 @@ void *my_realloc(void *ptr, size_t size) {
  *
  * Calloc is just malloc that initializes the memory to 0
  */
-void *my_calloc(size_t nelem, size_t elsize) {
+void *calloc(size_t nelem, size_t elsize) {
     size_t size = nelem * elsize;
-    void *ptr = my_malloc(size);
+    void *ptr = malloc(size);
     memset(ptr, 0, size);
     return ptr;
 }

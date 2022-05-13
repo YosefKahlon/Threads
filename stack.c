@@ -17,7 +17,7 @@ void push(Stack **stack, char *text) {
     /*old malloc */
 //    node *new_node = (node *) malloc(sizeof(node));
     /*new malloc*/
-    node *new_node = (node *) my_malloc(sizeof(node));
+    node *new_node = (node *) malloc(sizeof(node));
     strcpy(new_node->data, text);
 
     if ((*stack)->head == NULL) {
@@ -43,7 +43,7 @@ void pop(Stack **stack) {
         /*old free*/
 //        free((*stack)->head);
         /*new free*/
-        my_free((*stack)->head);
+        free((*stack)->head);
         (*stack)->head = NULL;
     } else {
         node *top = (*stack)->head;
@@ -51,7 +51,7 @@ void pop(Stack **stack) {
         /*old free*/
 //        free(top);
         /*new free*/
-        my_free(top);
+        free(top);
     }
     (*stack)->size--;
 }
@@ -72,7 +72,7 @@ void free_stack(Stack **stack) {
     /*old free*/
 //    free((*stack));
     /*new free*/
-    my_free((*stack));
+    free((*stack));
 }
 
 void printStack(Stack **stack) {
@@ -86,19 +86,19 @@ void printStack(Stack **stack) {
 //int main() {
 //
 //
-//    Stack *new_n = (Stack *) my_malloc(sizeof(Stack));
-//    new_n->head = (node *) my_malloc(sizeof(node));
+//    Stack *new_n = (Stack *) malloc(sizeof(Stack));
+//    new_n->head = (node *) malloc(sizeof(node));
 //    new_n->head->next = NULL;
 //    strcpy(new_n->head->data, "ddd");
 //
 //    printf("data %s \n", new_n->head->data);
 //    node *p = new_n->head;
-//    //my_free(new_n->head);
+//    //free(new_n->head);
 //
 //
 //
 //    printf("data %s \n", p->data);
-//    new_n->head = (node *) my_malloc(sizeof(node));
+//    new_n->head = (node *) malloc(sizeof(node));
 //    strcpy(new_n->head->data, "test");
 //
 //
